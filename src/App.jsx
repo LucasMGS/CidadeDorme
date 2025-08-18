@@ -9,7 +9,6 @@ import { DayScreen } from './components/DayScreen';
 import { HunterRevengeScreen } from './components/HunterRevengeScreen';
 import { GameOverScreen } from './components/GameOverScreen';
 
-// Componente para criar ou entrar em uma sala
 const GameLobby = ({ setGameId }) => {
   const [roomId, setRoomId] = useState('');
 
@@ -98,9 +97,6 @@ export default function App() {
     });
   };
 
-  // Todas as funções de lógica do jogo agora usam `handleUpdateGameState`
-  // para sincronizar as mudanças com todos os jogadores.
-
   const renderScreen = () => {
     if (!user) return <div className="text-center text-xl">Conectando...</div>;
     if (!gameId) return <GameLobby setGameId={setGameId} />;
@@ -119,8 +115,6 @@ export default function App() {
           handleUpdateGameState={handleUpdateGameState}
           currentPlayerInGame={!!currentPlayer}
         />;
-      // Os outros componentes (RoleRevealScreen, NightScreen, etc.) seriam renderizados aqui,
-      // recebendo `gameState` e `handleUpdateGameState` como props.
       default:
         return (
           <div>

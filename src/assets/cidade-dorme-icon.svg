@@ -1,0 +1,45 @@
+<svg width="100" height="100" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-labelledby="title" role="img">
+  <title id="title">Ícone do jogo Cidade Dorme</title>
+  
+  <!-- Fundo do Ícone (opcional, pode ser removido) -->
+  <defs>
+    <radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" style="stop-color:#2d3748;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a202c;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="98" fill="url(#grad1)" />
+
+  <!-- Lupa -->
+  <g transform="rotate(-45 100 100)">
+    <!-- Cabo da Lupa -->
+    <rect x="88" y="155" width="24" height="50" rx="12" fill="#4a5568" />
+    
+    <!-- Aro da Lupa -->
+    <circle cx="100" cy="100" r="65" fill="none" stroke="#718096" stroke-width="12" />
+    
+    <!-- Lente (com clipe para a cena interna) -->
+    <defs>
+      <clipPath id="lenteClip">
+        <circle cx="100" cy="100" r="58" />
+      </clipPath>
+    </defs>
+    <circle cx="100" cy="100" r="58" fill="#1a202c" />
+
+    <!-- Cena dentro da Lupa -->
+    <g clip-path="url(#lenteClip)">
+      <!-- Lua -->
+      <circle cx="135" cy="75" r="15" fill="#f7fafc" opacity="0.8" />
+      
+      <!-- Silhueta da Cidade -->
+      <path d="M40 158 V110 L55 90 L70 115 L80 100 L95 120 L110 95 L125 110 L140 80 L160 158 Z" fill="#2d3748" />
+      
+      <!-- Olho Misterioso -->
+      <g transform="translate(85 80)">
+        <path d="M 0 10 C 10 0, 20 0, 30 10 C 20 20, 10 20, 0 10 Z" fill="#f7fafc" opacity="0.15" />
+        <circle cx="15" cy="10" r="5" fill="#f56565" />
+      </g>
+    </g>
+  </g>
+</svg>
+
