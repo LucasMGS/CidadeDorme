@@ -286,7 +286,7 @@ export default function App() {
 
     switch (gameState.phase) {
       case 'LOBBY':
-        return <LobbyScreen gameState={gameState} user={user} playerName={playerName} setPlayerName={setPlayerName} handleJoinGame={handleJoinGame} handleUpdateGameState={handleUpdateGameState} currentPlayerInGame={!!currentPlayer}/>;
+        return <LobbyScreen gameState={gameState} user={user} playerName={playerName} setPlayerName={setPlayerName} handleJoinGame={handleJoinGame} handleUpdateGameState={handleUpdateGameState} currentPlayerInGame={!!currentPlayer} handleLeaveGame={handleLeaveGame}/>;
       case 'ROLE_REVEAL':
         return <RoleRevealScreen player={currentPlayer} />;
       case 'NIGHT':
@@ -316,10 +316,10 @@ export default function App() {
                   <p className={`text-sm font-semibold ${roleColorClass}`}>{currentPlayer.role.name}</p>
               </div>
             )}
-            <button onClick={handleLeaveGame} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-lg text-sm">Sair</button>
+            <button onClick={handleLeaveGame} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-lg text-sm mt-2">Sair</button>
           </div>
         )}
-        <div className="pt-20 md:pt-0">
+        <div className={gameState && gameState.phase !== 'LOBBY' ? 'pt-24 md:pt-0' : ''}>
           {renderScreen()}
         </div>
       </div>

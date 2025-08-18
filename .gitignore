@@ -6,6 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.env
 
 node_modules
 dist
@@ -24,8 +25,7 @@ dist-ssr
 *.sw?
 
 # Firebase files
-firebase.json
 firebase-debug.log
-firebase.js
+# firebase.js
 .firebaserc
 .firebase

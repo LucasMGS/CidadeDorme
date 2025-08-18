@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { assignRolesToPlayers } from '../utils/roleAssigner';
+import { remoteConfig, getNumber } from '../firebase';
 
-const MIN_PLAYERS = 5;
-
-export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handleJoinGame, handleUpdateGameState, currentPlayerInGame }) => {
+export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handleJoinGame, handleUpdateGameState, currentPlayerInGame, handleLeaveGame }) => {
   const { gameId, players, hostId } = gameState;
   const isHost = user.uid === hostId;
   const [editingPlayer, setEditingPlayer] = useState(null);
   const [newName, setNewName] = useState('');
+  const [minPlayers, setMinPlayers] = useState(getNumber(remoteConfig, "min_players") || 2);
+
+  useEffect(() => {
+    const minPlayersValue = getNumber(remoteConfig, "min_players");
+    if (minPlayersValue) {
+      setMinPlayers(minPlayersValue);
+    }
+  }, [gameState]);
 
   const startGame = () => {
-    if (players.length < MIN_PLAYERS) {
-      alert(`São necessários pelo menos ${MIN_PLAYERS} jogadores.`);
+    if (players.length < minPlayers) {
+      alert(`São necessários pelo menos ${minPlayers} jogadores.`);
       return;
     }
     
@@ -36,8 +43,13 @@ export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handle
 
   return (
     <div className="text-center">
-      <h1 className="text-3xl font-bold text-red-500 mb-2">Sala de Jogo</h1>
-      <p className="text-2xl font-mono bg-gray-800 text-yellow-400 inline-block px-4 py-1 rounded mb-6">Código: {gameId}</p>
+      <div className="relative mb-6">
+        <h1 className="text-3xl font-bold text-red-500 mb-2">Sala de Jogo</h1>
+        {currentPlayerInGame && (
+          <button onClick={handleLeaveGame} className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-lg text-sm">Sair da Sala</button>
+        )}
+        <p className="text-2xl font-mono bg-gray-800 text-yellow-400 inline-block px-4 py-1 rounded">Código: {gameId}</p>
+      </div>
       {!currentPlayerInGame && (
         <div className="flex justify-center mb-4">
           <input type="text" value={playerName} onChange={(e) => setPlayerName(e.target.value)} placeholder="Seu nome" className="bg-gray-700 text-white p-3 rounded-l-lg focus:outline-none w-64"/>
@@ -50,7 +62,7 @@ export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handle
           <div key={p.uid} className="bg-gray-800 p-3 rounded-lg text-center">
             {editingPlayer === p.uid ? (
               <div className="flex">
-                <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="bg-gray-600 text-white p-1 rounded-l w-full" autoFocus/>
+                <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="bg-gray-600 text-white p-1 rounded-l w-full" autoFocus onBlur={() => handleNameChange(p)} onKeyDown={(e) => e.key === 'Enter' && handleNameChange(p)}/>
                 <button onClick={() => handleNameChange(p)} className="bg-green-600 p-1 rounded-r">✓</button>
               </div>
             ) : (
@@ -64,8 +76,8 @@ export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handle
           </div>
         ))}
       </div>
-      {isHost && players.length >= MIN_PLAYERS && <button onClick={startGame} className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-xl">Começar Jogo</button>}
-      {isHost && players.length < MIN_PLAYERS && <p className="text-gray-400">Aguardando pelo menos {MIN_PLAYERS} jogadores...</p>}
+      {isHost && players.length >= minPlayers && <button onClick={startGame} className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-xl">Começar Jogo</button>}
+      {isHost && players.length < minPlayers && <p className="text-gray-400">Aguardando pelo menos {minPlayers} jogadores...</p>}
     </div>
   );
 };
