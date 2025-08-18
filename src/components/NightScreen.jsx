@@ -37,7 +37,6 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
     return <div className="text-center text-xl">É a vez de {actor.role.name}. Aguarde...</div>;
   }
 
-  // Vidente - Passo 2: Mostrar resultado e botão para continuar
   if (currentPlayer.role.name === ROLES.VIDENTE.name && nightData.seerCheck) {
     return (
       <div className="text-center">
@@ -50,7 +49,6 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
     );
   }
 
-  // Feiticeira
   if (currentPlayer.role.name === ROLES.FEITICEIRA.name) {
     const handleWitchAction = (updates) => {
       advanceNightTurn(updates);
@@ -84,7 +82,6 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
     );
   }
 
-  // UI Padrão para Vidente (Passo 1), Assassino e Médico
   let targets = [];
   let title = "";
   
@@ -116,9 +113,14 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
       <div className="bg-gray-800 p-6 rounded-lg">
         <h3 className="text-2xl mb-4">{title}</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {targets.map(p => (
-            <button key={p.uid} onClick={() => handleAction(p)} className="bg-blue-600 hover:bg-blue-800 text-white font-bold p-4 rounded-lg">{p.name}</button>
-          ))}
+          {targets.map(p => {
+            const isSelfSave = currentPlayer.role.name === ROLES.MEDICO.name && p.uid === currentPlayer.uid;
+            return (
+              <button key={p.uid} onClick={() => handleAction(p)} className="bg-blue-600 hover:bg-blue-800 text-white font-bold p-4 rounded-lg">
+                {isSelfSave ? "Me Proteger" : p.name}
+              </button>
+            )
+          })}
           {actor.role.name === ROLES.MEDICO.name && (
             <button onClick={() => handleAction(null)} className="bg-gray-600 hover:bg-gray-700 text-white font-bold p-4 rounded-lg col-span-full">Não proteger ninguém</button>
           )}

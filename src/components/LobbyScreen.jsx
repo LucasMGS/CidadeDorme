@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { assignRolesToPlayers } from '../utils/roleAssigner';
 
-const MIN_PLAYERS = 2;
+const MIN_PLAYERS = 5;
 
 export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handleJoinGame, handleUpdateGameState, currentPlayerInGame }) => {
   const { gameId, players, hostId } = gameState;
   const isHost = user.uid === hostId;
+  const [editingPlayer, setEditingPlayer] = useState(null);
+  const [newName, setNewName] = useState('');
 
   const startGame = () => {
     if (players.length < MIN_PLAYERS) {
@@ -22,6 +24,16 @@ export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handle
     });
   };
 
+  const handleNameChange = (playerToUpdate) => {
+    if (!newName.trim()) return;
+    const updatedPlayers = players.map(p => 
+      p.uid === playerToUpdate.uid ? { ...p, name: newName.trim() } : p
+    );
+    handleUpdateGameState({ players: updatedPlayers });
+    setEditingPlayer(null);
+    setNewName('');
+  };
+
   return (
     <div className="text-center">
       <h1 className="text-3xl font-bold text-red-500 mb-2">Sala de Jogo</h1>
@@ -34,10 +46,27 @@ export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handle
       )}
       <h2 className="text-2xl mb-4">Jogadores na Sala: ({players.length})</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
-        {players.map((p) => <div key={p.uid} className="bg-gray-800 p-3 rounded-lg text-center">{p.name}</div>)}
+        {players.map((p) => (
+          <div key={p.uid} className="bg-gray-800 p-3 rounded-lg text-center">
+            {editingPlayer === p.uid ? (
+              <div className="flex">
+                <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="bg-gray-600 text-white p-1 rounded-l w-full" autoFocus/>
+                <button onClick={() => handleNameChange(p)} className="bg-green-600 p-1 rounded-r">✓</button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2">
+                <span>{p.name}</span>
+                {p.uid === user.uid && (
+                  <button onClick={() => { setEditingPlayer(p.uid); setNewName(p.name); }} className="text-xs">✏️</button>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
       {isHost && players.length >= MIN_PLAYERS && <button onClick={startGame} className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-xl">Começar Jogo</button>}
       {isHost && players.length < MIN_PLAYERS && <p className="text-gray-400">Aguardando pelo menos {MIN_PLAYERS} jogadores...</p>}
     </div>
   );
 };
+

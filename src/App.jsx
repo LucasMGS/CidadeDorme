@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth, onAuthStateChanged } from './firebase';
-import { doc, setDoc, onSnapshot, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { ROLES } from './constants/roles';
 import { LobbyScreen } from './components/LobbyScreen';
 import { RoleRevealScreen } from './components/RoleRevealScreen';
@@ -8,6 +8,7 @@ import { NightScreen } from './components/NightScreen';
 import { DayScreen } from './components/DayScreen';
 import { HunterRevengeScreen } from './components/HunterRevengeScreen';
 import { GameOverScreen } from './components/GameOverScreen';
+import { roleColors } from './utils/roleColors';
 
 const GameLobby = ({ setGameId }) => {
   const [roomId, setRoomId] = useState('');
@@ -74,6 +75,16 @@ export default function App() {
     const good = alive.filter(p => p.role.team === 'good');
     if (evil.length === 0) return 'CIDADÃOS';
     if (evil.length >= good.length) return 'ASSASSINOS';
+    return null;
+  };
+
+  const getFirstNightActor = (players) => {
+    const turnOrder = [ROLES.VIDENTE.name, ROLES.ASSASSINO.name, ROLES.FEITICEIRA.name, ROLES.MEDICO.name];
+    for (const roleName of turnOrder) {
+      if (players.some(p => p.isAlive && p.role.name === roleName)) {
+        return roleName;
+      }
+    }
     return null;
   };
 
@@ -171,8 +182,16 @@ export default function App() {
       updates.hunterPendingShot = hunterTriggered;
     } else {
       updates.phase = 'NIGHT';
-      updates['nightData.currentActor'] = ROLES.VIDENTE.name;
-      updates['nightData.phase'] = 'acting';
+      updates.nightData = {
+        currentActor: getFirstNightActor(playersCopy),
+        phase: 'acting',
+        lastProtected: gameState.nightData.doctorSaveTarget || null,
+        seerCheck: null,
+        assassinTarget: null,
+        witchSaveUsed: false,
+        witchKillTarget: null,
+        doctorSaveTarget: null
+      };
     }
     await handleUpdateGameState(updates);
   };
@@ -197,13 +216,20 @@ export default function App() {
       updates.history = arrayUnion({ round: gameState.roundNumber, winner: winner });
     } else {
       updates.phase = 'NIGHT';
-      updates['nightData.currentActor'] = ROLES.VIDENTE.name;
-      updates['nightData.phase'] = 'acting';
+      updates.nightData = {
+        currentActor: getFirstNightActor(playersCopy),
+        phase: 'acting',
+        lastProtected: gameState.nightData.doctorSaveTarget || null,
+        seerCheck: null,
+        assassinTarget: null,
+        witchSaveUsed: false,
+        witchKillTarget: null,
+        doctorSaveTarget: null
+      };
     }
     await handleUpdateGameState(updates);
   };
 
-  // Efeito para transições de fase gerenciadas pelo host
   useEffect(() => {
     if (!gameState || !user || user.uid !== gameState.hostId) return;
 
@@ -211,7 +237,7 @@ export default function App() {
       const timer = setTimeout(() => {
         handleUpdateGameState({ 
           phase: 'NIGHT',
-          'nightData.currentActor': ROLES.VIDENTE.name,
+          'nightData.currentActor': getFirstNightActor(gameState.players),
           'nightData.phase': 'acting',
         });
       }, 8000);
@@ -240,6 +266,17 @@ export default function App() {
     });
   };
 
+  const handleLeaveGame = async () => {
+    if (!user || !gameState) return;
+    const playerToRemove = gameState.players.find(p => p.uid === user.uid);
+    if (playerToRemove) {
+      await handleUpdateGameState({
+        players: arrayRemove(playerToRemove)
+      });
+    }
+    setGameId(null);
+  };
+
   const renderScreen = () => {
     if (!user) return <div className="text-center text-xl">Conectando...</div>;
     if (!gameId) return <GameLobby setGameId={setGameId} />;
@@ -264,11 +301,27 @@ export default function App() {
         return <div>Fase de jogo desconhecida: {gameState.phase}</div>;
     }
   };
+  
+  const currentPlayer = gameState ? gameState.players.find(p => p.uid === user.uid) : null;
+  const roleColorClass = currentPlayer?.role?.name ? roleColors[currentPlayer.role.name] || 'text-gray-400' : 'text-gray-400';
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4 font-sans">
       <div className="w-full max-w-4xl mx-auto">
-        {renderScreen()}
+        {gameState && gameState.phase !== 'LOBBY' && currentPlayer && (
+          <div className="absolute top-4 left-4 flex items-start gap-4 z-10">
+            {currentPlayer.role && (
+              <div className="p-2 md:p-4 bg-gray-800 rounded-lg shadow-lg">
+                  <p className="font-bold text-base md:text-lg">{currentPlayer.name}</p>
+                  <p className={`text-sm font-semibold ${roleColorClass}`}>{currentPlayer.role.name}</p>
+              </div>
+            )}
+            <button onClick={handleLeaveGame} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-lg text-sm">Sair</button>
+          </div>
+        )}
+        <div className="pt-20 md:pt-0">
+          {renderScreen()}
+        </div>
       </div>
     </div>
   );
