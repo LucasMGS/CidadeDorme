@@ -8,6 +8,7 @@ import { NightScreen } from './components/NightScreen';
 import { DayScreen } from './components/DayScreen';
 import { HunterRevengeScreen } from './components/HunterRevengeScreen';
 import { GameOverScreen } from './components/GameOverScreen';
+import { NightStartScreen } from './components/NightStartScreen'; // Importa o novo componente
 import { roleColors } from './utils/roleColors';
 
 const GameLobby = ({ setGameId }) => {
@@ -222,8 +223,9 @@ export default function App() {
       updates.winner = winner;
       updates.history = arrayUnion({ night: gameState.nightNumber, winner: winner, actions: null });
     } else {
-      updates.phase = 'NIGHT';
-      updates.nightData = createNewNightData(playersCopy, gameState.nightData.doctorSaveTarget);
+      updates.phase = 'NIGHT_START';
+      updates.nightNumber = gameState.nightNumber + 1;
+      updates.gameLog = [...newLog, `Começando a noite ${gameState.nightNumber + 1}!`];
     }
     await handleUpdateGameState(updates);
   };
@@ -257,11 +259,22 @@ export default function App() {
                 handleUpdateGameState({ phase: 'GAME_OVER', winner: winner });
             } else {
                 handleUpdateGameState({
-                    phase: 'NIGHT',
-                    nightData: createNewNightData(gameState.players, gameState.nightData.doctorSaveTarget)
+                    phase: 'NIGHT_START',
+                    nightNumber: gameState.nightNumber + 1,
+                    gameLog: [...gameState.gameLog, `Começando a noite ${gameState.nightNumber + 1}!` ],
                 });
             }
         }, 6000);
+        return () => clearTimeout(timer);
+    }
+    
+    if (gameState.phase === 'NIGHT_START') {
+        const timer = setTimeout(() => {
+            handleUpdateGameState({
+                phase: 'NIGHT',
+                nightData: createNewNightData(gameState.players, gameState.nightData.doctorSaveTarget)
+            });
+        }, 4000);
         return () => clearTimeout(timer);
     }
     
@@ -301,6 +314,8 @@ export default function App() {
         return <LobbyScreen gameState={gameState} user={user} playerName={playerName} setPlayerName={setPlayerName} handleJoinGame={handleJoinGame} handleUpdateGameState={handleUpdateGameState} currentPlayerInGame={!!currentPlayer} handleLeaveGame={handleLeaveGame}/>;
       case 'ROLE_REVEAL':
         return <RoleRevealScreen player={currentPlayer} />;
+      case 'NIGHT_START':
+        return <NightStartScreen gameState={gameState} />;
       case 'NIGHT':
         return <NightScreen gameState={gameState} currentPlayer={currentPlayer} handleUpdateGameState={handleUpdateGameState} />;
       case 'DAY':
