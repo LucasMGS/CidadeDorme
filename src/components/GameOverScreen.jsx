@@ -8,7 +8,9 @@ export const GameOverScreen = ({ gameState, user, handleUpdateGameState }) => {
 
   const startNewRound = () => {
     if (!isHost) return;
+
     const playersForNewRound = assignRolesToPlayers(players);
+
     handleUpdateGameState({
       phase: 'ROLE_REVEAL',
       players: playersForNewRound,
@@ -24,6 +26,7 @@ export const GameOverScreen = ({ gameState, user, handleUpdateGameState }) => {
 
   const backToLobby = () => {
     if (!isHost) return;
+
     handleUpdateGameState({
       phase: 'LOBBY',
       players: players.map(p => ({ uid: p.uid, name: p.name, role: null, isAlive: true })),
@@ -44,7 +47,7 @@ export const GameOverScreen = ({ gameState, user, handleUpdateGameState }) => {
     <div className="text-center">
       <h1 className="text-6xl font-bold mb-4">Fim da Noite!</h1>
       <p className="text-3xl mb-8">
-        Os <span className={`font-bold ${winner === 'ASSASSINOS' ? 'text-red-500' : 'text-green-500'}`}>{winner}</span> venceram a noite {nightNumber}!
+        Os <span className={`font-bold ${winner === 'LOBOS' ? 'text-red-500' : 'text-green-500'}`}>{winner}</span> venceram a noite {nightNumber}!
       </p>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -71,7 +74,7 @@ export const GameOverScreen = ({ gameState, user, handleUpdateGameState }) => {
           <h3 className="text-2xl font-bold mb-4">Histórico da Sala</h3>
           {(history || []).map((round, index) => (
             <p key={index} className="text-lg">
-              <span className="font-bold">Noite {round.night}:</span> Vencedor - <span className={`font-semibold ${roleColors[round.winner === 'ASSASSINOS' ? 'Lobo' : 'Aldeão']}`}>{round.winner}</span>
+              <span className="font-bold">Noite {round.night}:</span> Vencedor - <span className={`font-semibold ${roleColors[round.winner === 'LOBOS' ? 'Lobo' : 'Aldeão']}`}>{round.winner}</span>
             </p>
           ))}
         </div>
@@ -89,4 +92,3 @@ export const GameOverScreen = ({ gameState, user, handleUpdateGameState }) => {
     </div>
   );
 };
-

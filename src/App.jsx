@@ -74,7 +74,7 @@ export default function App() {
     const evil = alive.filter(p => p.role.team === 'evil');
     const good = alive.filter(p => p.role.team === 'good');
     if (evil.length === 0) return 'CIDADÃOS';
-    if (evil.length >= good.length) return 'ASSASSINOS';
+    if (evil.length >= good.length) return 'LOBOS';
     return null;
   };
 
@@ -87,6 +87,17 @@ export default function App() {
     }
     return null;
   };
+
+  const createNewNightData = (players, lastDoctorSave) => ({
+    currentActor: getFirstNightActor(players),
+    phase: 'acting',
+    lastProtected: lastDoctorSave || null,
+    seerCheck: null,
+    assassinTarget: null,
+    witchSaveUsed: false,
+    witchKillTarget: null,
+    doctorSaveTarget: null,
+  });
 
   const processNightResults = async () => {
     let playersCopy = JSON.parse(JSON.stringify(gameState.players));
@@ -212,11 +223,7 @@ export default function App() {
       updates.history = arrayUnion({ night: gameState.nightNumber, winner: winner, actions: null });
     } else {
       updates.phase = 'NIGHT';
-      updates.nightData = {
-        currentActor: getFirstNightActor(playersCopy),
-        phase: 'acting',
-        lastProtected: gameState.nightData.doctorSaveTarget || null,
-      };
+      updates.nightData = createNewNightData(playersCopy, gameState.nightData.doctorSaveTarget);
     }
     await handleUpdateGameState(updates);
   };
@@ -228,8 +235,7 @@ export default function App() {
       const timer = setTimeout(() => {
         handleUpdateGameState({ 
           phase: 'NIGHT',
-          'nightData.currentActor': getFirstNightActor(gameState.players),
-          'nightData.phase': 'acting',
+          nightData: createNewNightData(gameState.players, null)
         });
       }, 8000);
       return () => clearTimeout(timer);
@@ -252,14 +258,10 @@ export default function App() {
             } else {
                 handleUpdateGameState({
                     phase: 'NIGHT',
-                    nightData: {
-                        currentActor: getFirstNightActor(gameState.players),
-                        phase: 'acting',
-                        lastProtected: gameState.nightData.doctorSaveTarget || null,
-                    }
+                    nightData: createNewNightData(gameState.players, gameState.nightData.doctorSaveTarget)
                 });
             }
-        }, 6000); // 6 segundos para ver o resultado da votação
+        }, 6000);
         return () => clearTimeout(timer);
     }
     
