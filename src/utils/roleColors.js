@@ -1,7 +1,7 @@
 import { ROLES } from '../constants/roles';
 
 export const roleColors = {
-  [ROLES.ASSASSINO.name]: 'text-red-500',
+  [ROLES.LOBO.name]: 'text-red-500',
   [ROLES.MEDICO.name]: 'text-green-500',
   [ROLES.ALDEAO.name]: 'text-orange-500',
   [ROLES.FEITICEIRA.name]: 'text-purple-500',

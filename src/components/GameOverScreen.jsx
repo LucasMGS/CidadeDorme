@@ -1,20 +1,19 @@
 import React from 'react';
 import { assignRolesToPlayers } from '../utils/roleAssigner';
+import { roleColors } from '../utils/roleColors';
 
 export const GameOverScreen = ({ gameState, user, handleUpdateGameState }) => {
-  const { winner, players, history, hostId, roundNumber } = gameState;
+  const { winner, players, history, hostId, nightNumber } = gameState;
   const isHost = user && user.uid === hostId;
 
   const startNewRound = () => {
     if (!isHost) return;
-
     const playersForNewRound = assignRolesToPlayers(players);
-
     handleUpdateGameState({
       phase: 'ROLE_REVEAL',
       players: playersForNewRound,
-      roundNumber: roundNumber + 1,
-      gameLog: [`Começando o round ${roundNumber + 1}!`],
+      nightNumber: nightNumber + 1,
+      gameLog: [`Começando a noite ${nightNumber + 1}!`],
       witchState: { hasLifePotion: true, hasDeathPotion: true },
       nightData: { currentActor: null, phase: 'acting' },
       hunterPendingShot: null,
@@ -25,11 +24,10 @@ export const GameOverScreen = ({ gameState, user, handleUpdateGameState }) => {
 
   const backToLobby = () => {
     if (!isHost) return;
-
     handleUpdateGameState({
       phase: 'LOBBY',
       players: players.map(p => ({ uid: p.uid, name: p.name, role: null, isAlive: true })),
-      roundNumber: 1,
+      nightNumber: 1,
       history: [],
       gameLog: [],
       witchState: { hasLifePotion: true, hasDeathPotion: true },
@@ -40,27 +38,40 @@ export const GameOverScreen = ({ gameState, user, handleUpdateGameState }) => {
     });
   };
 
+  const lastNightActions = history && history.length > 0 ? history[history.length - 1].actions : null;
+
   return (
     <div className="text-center">
-      <h1 className="text-6xl font-bold mb-4">Fim do Round!</h1>
+      <h1 className="text-6xl font-bold mb-4">Fim da Noite!</h1>
       <p className="text-3xl mb-8">
-        Os <span className={`font-bold ${winner === 'ASSASSINOS' ? 'text-red-500' : 'text-green-500'}`}>{winner}</span> venceram o round {roundNumber}!
+        Os <span className={`font-bold ${winner === 'ASSASSINOS' ? 'text-red-500' : 'text-green-500'}`}>{winner}</span> venceram a noite {nightNumber}!
       </p>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="bg-gray-800 p-6 rounded-lg">
-          <h3 className="text-2xl font-bold mb-4">Quadro de Papéis do Round</h3>
+          <h3 className="text-2xl font-bold mb-4">Papéis da Noite</h3>
           {players.map(p => (
             <p key={p.uid} className="text-lg">
-              {p.name} era <span className={`font-bold ${p.role.team === 'evil' ? 'text-red-400' : 'text-green-400'}`}>{p.role.name}</span>
+              {p.name} era <span className={`font-bold ${roleColors[p.role.name]}`}>{p.role.name}</span>
             </p>
           ))}
+        </div>
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <h3 className="text-2xl font-bold mb-4">Ações da Última Noite</h3>
+          {lastNightActions ? (
+            <div className="text-left">
+              {lastNightActions.attack && <p>🔪 <span className="text-red-500">Lobos</span> atacaram: {lastNightActions.attack.target}</p>}
+              {lastNightActions.save && <p>💚 <span className="text-green-500">Médico</span> salvou: {lastNightActions.save.target}</p>}
+              {lastNightActions.witchSave && <p>💚 <span className="text-purple-500">Feiticeira</span> usou a poção da vida.</p>}
+              {lastNightActions.witchKill && <p>☠️ <span className="text-purple-500">Feiticeira</span> matou: {lastNightActions.witchKill.target}</p>}
+            </div>
+          ) : <p>Nenhuma ação especial na última noite.</p>}
         </div>
         <div className="bg-gray-800 p-6 rounded-lg">
           <h3 className="text-2xl font-bold mb-4">Histórico da Sala</h3>
           {(history || []).map((round, index) => (
             <p key={index} className="text-lg">
-              <span className="font-bold">Round {round.round}:</span> Vencedor - <span className={`font-semibold ${round.winner === 'ASSASSINOS' ? 'text-red-400' : 'text-green-400'}`}>{round.winner}</span>
+              <span className="font-bold">Noite {round.night}:</span> Vencedor - <span className={`font-semibold ${roleColors[round.winner === 'ASSASSINOS' ? 'Lobo' : 'Aldeão']}`}>{round.winner}</span>
             </p>
           ))}
         </div>
@@ -68,17 +79,14 @@ export const GameOverScreen = ({ gameState, user, handleUpdateGameState }) => {
 
       {isHost && (
         <div className="mt-8 flex justify-center gap-4">
-            <button onClick={startNewRound} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-xl">
-                Começar Próximo Round
-            </button>
-            <button onClick={backToLobby} className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg text-xl">
-                Voltar para o Lobby
-            </button>
+            <button onClick={startNewRound} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-xl">Próxima Noite</button>
+            <button onClick={backToLobby} className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg text-xl">Voltar para o Lobby</button>
         </div>
       )}
       {!isHost && (
-        <p className="mt-8 text-yellow-400 text-xl animate-pulse">Aguardando o host iniciar o próximo round...</p>
+        <p className="mt-8 text-yellow-400 text-xl animate-pulse">Aguardando o host iniciar a próxima noite...</p>
       )}
     </div>
   );
 };
+

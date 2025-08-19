@@ -1,5 +1,6 @@
 import React from 'react';
 import { ROLES } from '../constants/roles';
+import { roleColors } from '../utils/roleColors';
 
 export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState }) => {
   const { players, nightData, witchState } = gameState;
@@ -7,7 +8,7 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
   const actor = players.find(p => p.isAlive && p.role.name === nightData.currentActor);
 
   const advanceNightTurn = (updates = {}) => {
-    const turnOrder = [ROLES.VIDENTE.name, ROLES.ASSASSINO.name, ROLES.FEITICEIRA.name, ROLES.MEDICO.name];
+    const turnOrder = [ROLES.VIDENTE.name, ROLES.LOBO.name, ROLES.FEITICEIRA.name, ROLES.MEDICO.name];
     const currentTurnIndex = turnOrder.indexOf(nightData.currentActor);
     let nextActorName = null;
     
@@ -34,7 +35,7 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
 
   if (!actor || !currentPlayer) return <div className="text-center text-xl">Aguardando...</div>;
   if (currentPlayer.role.name !== actor.role.name) {
-    return <div className="text-center text-xl">É a vez de {actor.role.name}. Aguarde...</div>;
+    return <div className="text-center text-xl">É a vez de <span className={roleColors[actor.role.name]}>{actor.role.name}</span>. Aguarde...</div>;
   }
 
   if (currentPlayer.role.name === ROLES.VIDENTE.name && nightData.seerCheck) {
@@ -42,7 +43,7 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
       <div className="text-center">
         <h2 className="text-3xl font-bold mb-6">Sua Investigação</h2>
         <div className="bg-gray-800 p-6 rounded-lg">
-          <p className="text-lg text-yellow-300 mb-4">O papel de {nightData.seerCheck.target} é {nightData.seerCheck.role.name}</p>
+          <p className="text-lg text-yellow-300 mb-4">O papel de {nightData.seerCheck.target} é <span className={roleColors[nightData.seerCheck.role.name]}>{nightData.seerCheck.role.name}</span></p>
           <button onClick={() => advanceNightTurn()} className="bg-blue-600 hover:bg-blue-800 text-white font-bold p-3 rounded-lg">Continuar</button>
         </div>
       </div>
@@ -55,11 +56,11 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
     };
     return (
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-6">É a sua vez, Feiticeira</h2>
+        <h2 className="text-3xl font-bold mb-6">É a sua vez, <span className="text-purple-500">Feiticeira</span></h2>
         <div className="bg-gray-800 p-6 rounded-lg">
           {nightData.assassinTarget ? 
-            <p className="text-xl text-yellow-400 mb-4">Os assassinos atacaram: {nightData.assassinTarget}</p>
-            : <p className="text-xl text-gray-400 mb-4">Os assassinos não atacaram ninguém esta noite.</p>
+            <p className="text-xl text-yellow-400 mb-4">Os Lobos atacaram: {nightData.assassinTarget}</p>
+            : <p className="text-xl text-gray-400 mb-4">Os Lobos não atacaram ninguém esta noite.</p>
           }
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 my-4">
             {witchState.hasLifePotion && nightData.assassinTarget && (
@@ -69,7 +70,7 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
               <div className="w-full sm:w-auto">
                 <h3 className="mb-2">Usar Poção da Morte em:</h3>
                 <div className="grid grid-cols-2 gap-2">
-                  {alivePlayers.filter(p => p.name !== nightData.assassinTarget).map(p => (
+                  {alivePlayers.filter(p => p.uid !== currentPlayer.uid && p.name !== nightData.assassinTarget).map(p => (
                       <button key={p.uid} onClick={() => handleWitchAction({ 'witchState.hasDeathPotion': false, 'nightData.witchKillTarget': p.name })} className="bg-purple-600 hover:bg-purple-700 text-white font-bold p-2 rounded-lg">{p.name}</button>
                   ))}
                 </div>
@@ -84,12 +85,13 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
 
   let targets = [];
   let title = "";
+  const wolves = players.filter(p => p.role.name === ROLES.LOBO.name);
   
   if (nightData.currentActor === ROLES.VIDENTE.name) {
     title = "Vidente, quem você quer investigar?";
     targets = alivePlayers.filter(p => p.uid !== currentPlayer.uid);
-  } else if (nightData.currentActor === ROLES.ASSASSINO.name) {
-    title = "Assassino, escolha sua vítima.";
+  } else if (nightData.currentActor === ROLES.LOBO.name) {
+    title = "Lobo, escolha sua vítima.";
     targets = alivePlayers.filter(p => p.role.team !== 'evil');
   } else if (nightData.currentActor === ROLES.MEDICO.name) {
     title = "Médico, quem você quer proteger?";
@@ -101,7 +103,7 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
       handleUpdateGameState({ 'nightData.seerCheck': { target: targetPlayer.name, role: targetPlayer.role } });
     } else {
       const updates = {};
-      if (actor.role.name === ROLES.ASSASSINO.name) updates['nightData.assassinTarget'] = targetPlayer.name;
+      if (actor.role.name === ROLES.LOBO.name) updates['nightData.assassinTarget'] = targetPlayer ? targetPlayer.name : null;
       if (actor.role.name === ROLES.MEDICO.name) updates['nightData.doctorSaveTarget'] = targetPlayer ? targetPlayer.name : null;
       advanceNightTurn(updates);
     }
@@ -109,7 +111,13 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
 
   return (
     <div className="text-center">
-      <h2 className="text-3xl font-bold mb-6">É a sua vez, {actor.role.name}</h2>
+      <h2 className="text-3xl font-bold mb-6">É a sua vez, <span className={roleColors[actor.role.name]}>{actor.role.name}</span></h2>
+      {currentPlayer.role.name === ROLES.LOBO.name && wolves.length > 1 && (
+        <div className="mb-4 p-2 bg-gray-800 rounded-lg">
+            <p className="text-sm text-gray-400">Seus aliados Lobos:</p>
+            <p className="font-semibold">{wolves.filter(w => w.uid !== currentPlayer.uid).map(w => w.name).join(', ')}</p>
+        </div>
+      )}
       <div className="bg-gray-800 p-6 rounded-lg">
         <h3 className="text-2xl mb-4">{title}</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -117,16 +125,17 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
             const isSelfSave = currentPlayer.role.name === ROLES.MEDICO.name && p.uid === currentPlayer.uid;
             return (
               <button key={p.uid} onClick={() => handleAction(p)} className="bg-blue-600 hover:bg-blue-800 text-white font-bold p-4 rounded-lg">
-                {isSelfSave ? "Me Proteger" : p.name}
+                {isSelfSave ? "Me salvar" : p.name}
               </button>
             )
           })}
-          {actor.role.name === ROLES.MEDICO.name && (
-            <button onClick={() => handleAction(null)} className="bg-gray-600 hover:bg-gray-700 text-white font-bold p-4 rounded-lg col-span-full">Não proteger ninguém</button>
+          {(actor.role.name === ROLES.MEDICO.name || actor.role.name === ROLES.LOBO.name) && (
+            <button onClick={() => handleAction(null)} className="bg-gray-600 hover:bg-gray-700 text-white font-bold p-4 rounded-lg col-span-full">
+                {actor.role.name === ROLES.MEDICO.name ? "Não proteger ninguém" : "Não atacar ninguém"}
+            </button>
           )}
         </div>
       </div>
     </div>
   );
 };
-
