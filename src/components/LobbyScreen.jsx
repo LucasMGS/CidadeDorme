@@ -60,19 +60,22 @@ export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handle
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
         {players.map((p) => (
           <div key={p.uid} className="bg-gray-800 p-3 rounded-lg text-center">
-            {editingPlayer === p.uid ? (
-              <div className="flex">
-                <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="bg-gray-600 text-white p-1 rounded-l w-full" autoFocus onBlur={() => handleNameChange(p)} onKeyDown={(e) => e.key === 'Enter' && handleNameChange(p)}/>
-                <button onClick={() => handleNameChange(p)} className="bg-green-600 p-1 rounded-r">✓</button>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center gap-2">
-                <span>{p.name}</span>
-                {p.uid === user.uid && (
-                  <button onClick={() => { setEditingPlayer(p.uid); setNewName(p.name); }} className="text-xs">✏️</button>
-                )}
-              </div>
-            )}
+            <div className="flex items-center justify-center gap-2">
+              {p.uid === hostId && <span>👑</span>}
+              {editingPlayer === p.uid ? (
+                <div className="flex">
+                  <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="bg-gray-600 text-white p-1 rounded-l w-full" autoFocus onBlur={() => handleNameChange(p)} onKeyDown={(e) => e.key === 'Enter' && handleNameChange(p)}/>
+                  <button onClick={() => handleNameChange(p)} className="bg-green-600 p-1 rounded-r">✓</button>
+                </div>
+              ) : (
+                <>
+                  <span>{p.name}</span>
+                  {p.uid === user.uid && (
+                    <button onClick={() => { setEditingPlayer(p.uid); setNewName(p.name); }} className="text-xs">✏️</button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         ))}
       </div>

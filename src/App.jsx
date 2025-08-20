@@ -8,7 +8,7 @@ import { NightScreen } from './components/NightScreen';
 import { DayScreen } from './components/DayScreen';
 import { HunterRevengeScreen } from './components/HunterRevengeScreen';
 import { GameOverScreen } from './components/GameOverScreen';
-import { NightStartScreen } from './components/NightStartScreen'; // Importa o novo componente
+import { NightStartScreen } from './components/NightStartScreen';
 import { roleColors } from './utils/roleColors';
 
 const GameLobby = ({ setGameId }) => {
@@ -98,6 +98,7 @@ export default function App() {
     witchSaveUsed: false,
     witchKillTarget: null,
     doctorSaveTarget: null,
+    turnEndTime: Date.now() + 30000,
   });
 
   const processNightResults = async () => {
@@ -176,7 +177,7 @@ export default function App() {
 
     if (playersWithMaxVotes.length > 1) {
         newLog.push(`A votação terminou em empate! Ninguém foi eliminado.`);
-    } else if (playerToEliminate) {
+    } else if (playerToEliminate && playerToEliminate !== 'Ninguém') {
       const targetPlayer = playersCopy.find(p => p.name === playerToEliminate);
       if (targetPlayer) {
         targetPlayer.isAlive = false;
@@ -248,7 +249,17 @@ export default function App() {
     }
     
     const alivePlayers = gameState.players.filter(p => p.isAlive);
-    if (gameState.phase === 'DAY' && Object.keys(gameState.votes || {}).length === alivePlayers.length) {
+    if (gameState.phase === 'DAY' && (gameState.dayTimerExpired || Object.keys(gameState.votes || {}).length === alivePlayers.length)) {
+        const currentVotes = gameState.votes || {};
+        const updates = { votes: { ...currentVotes } };
+        
+        alivePlayers.forEach(player => {
+            if (!currentVotes[player.uid]) {
+                updates.votes[player.uid] = 'Ninguém';
+            }
+        });
+        
+        handleUpdateGameState({ ...updates, dayTimerExpired: false });
         processDayVote();
     }
     

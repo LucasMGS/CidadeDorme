@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
 export const DayScreen = ({ gameState, currentPlayer, handleUpdateGameState }) => {
-  const { players, gameLog, votes, phase } = gameState;
+  const { players, gameLog, votes, phase, hostId } = gameState;
   const alivePlayers = players.filter(p => p.isAlive);
   const [timer, setTimer] = useState(180);
+  const [selectedVote, setSelectedVote] = useState(null);
 
   useEffect(() => {
     if (phase === 'DAY') {
@@ -11,7 +12,9 @@ export const DayScreen = ({ gameState, currentPlayer, handleUpdateGameState }) =
         setTimer(prev => {
           if (prev <= 1) {
             clearInterval(interval);
-            // O host irá processar a votação via useEffect em App.jsx
+            if (currentPlayer && currentPlayer.uid === hostId) {
+              handleUpdateGameState({ dayTimerExpired: true });
+            }
             return 0;
           }
           return prev - 1;
@@ -19,12 +22,12 @@ export const DayScreen = ({ gameState, currentPlayer, handleUpdateGameState }) =
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [phase]);
+  }, [phase, currentPlayer, hostId]);
 
-  const handleVote = (targetName) => {
-    if (!currentPlayer.isAlive) return;
+  const handleConfirmVote = () => {
+    if (!currentPlayer.isAlive || !selectedVote) return;
     handleUpdateGameState({
-      [`votes.${currentPlayer.uid}`]: targetName
+      [`votes.${currentPlayer.uid}`]: selectedVote
     });
   };
 
@@ -65,15 +68,18 @@ export const DayScreen = ({ gameState, currentPlayer, handleUpdateGameState }) =
         <div>
             <h3 className="text-2xl font-bold mb-4">Vote para eliminar um suspeito</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {alivePlayers.filter(p => p.uid !== currentPlayer.uid).map(p => (
-                <button key={p.uid} onClick={() => handleVote(p.name)} className="bg-red-600 hover:bg-red-700 text-white font-bold p-4 rounded-lg">
-                Votar em {p.name}
-                </button>
-            ))}
-            <button onClick={() => handleVote('Ninguém')} className="bg-gray-600 hover:bg-gray-700 text-white font-bold p-4 rounded-lg col-span-full">
-                Não votar em ninguém
-            </button>
+              {alivePlayers.filter(p => p.uid !== currentPlayer.uid).map(p => (
+                  <button key={p.uid} onClick={() => setSelectedVote(p.name)} className={`font-bold p-4 rounded-lg ${selectedVote === p.name ? 'bg-green-600' : 'bg-red-600 hover:bg-red-700'}`}>
+                    {p.name}
+                  </button>
+              ))}
+              <button onClick={() => setSelectedVote('Ninguém')} className={`font-bold p-4 rounded-lg col-span-full ${selectedVote === 'Ninguém' ? 'bg-green-600' : 'bg-gray-600 hover:bg-gray-700'}`}>
+                  Não votar em ninguém
+              </button>
             </div>
+            <button onClick={handleConfirmVote} disabled={!selectedVote} className="mt-6 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-3 px-8 rounded-lg text-xl">
+                Confirmar Voto
+            </button>
         </div>
       ) : (
         <p className="text-xl text-gray-500">Você está morto e não pode votar.</p>
@@ -81,3 +87,4 @@ export const DayScreen = ({ gameState, currentPlayer, handleUpdateGameState }) =
     </div>
   );
 };
+

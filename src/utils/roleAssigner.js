@@ -5,7 +5,7 @@ export const assignRolesToPlayers = (players) => {
   let rolesToAssign = [];
 
   if (numPlayers >= 8) rolesToAssign = [ROLES.LOBO, ROLES.LOBO, ROLES.VIDENTE, ROLES.MEDICO, ROLES.FEITICEIRA, ROLES.CACADOR];
-  else if (numPlayers >= 7) rolesToAssign = [ROLES.LOBO, ROLES.LOBO, ROLES.VIDENTE, ROLES.MEDICO, ROLES.CACADOR];
+  else if (numPlayers >= 7) rolesToAssign = [ROLES.LOBO, ROLES.FEITICEIRA, ROLES.VIDENTE, ROLES.MEDICO, ROLES.CACADOR];
   else if (numPlayers >= 5) rolesToAssign = [ROLES.LOBO, ROLES.VIDENTE, ROLES.MEDICO, ROLES.FEITICEIRA];
   else if (numPlayers >= 4) rolesToAssign = [ROLES.LOBO, ROLES.VIDENTE, ROLES.MEDICO];
   else if (numPlayers === 3) rolesToAssign = [ROLES.LOBO, ROLES.MEDICO, ROLES.CACADOR];
