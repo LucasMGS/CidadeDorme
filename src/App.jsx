@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { db, auth, onAuthStateChanged } from './firebase';
 import { doc, setDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { ROLES } from './constants/roles';
+import { HomePage } from './components/HomePage';
+import { GameLobby } from './components/GameLobby';
 import { LobbyScreen } from './components/LobbyScreen';
 import { RoleRevealScreen } from './components/RoleRevealScreen';
 import { NightScreen } from './components/NightScreen';
@@ -11,39 +13,13 @@ import { GameOverScreen } from './components/GameOverScreen';
 import { NightStartScreen } from './components/NightStartScreen';
 import { roleColors } from './utils/roleColors';
 
-const GameLobby = ({ setGameId }) => {
-  const [roomId, setRoomId] = useState('');
-  const createGame = async () => {
-    const newGameId = Math.random().toString(36).substring(2, 8).toUpperCase();
-    const user = auth.currentUser;
-    if (!user) return;
-    await setDoc(doc(db, "games", newGameId), {
-      gameId: newGameId, hostId: user.uid, players: [], phase: 'LOBBY', gameLog: [],
-      witchState: { hasLifePotion: true, hasDeathPotion: true },
-      nightData: { currentActor: null, phase: 'acting' }, hunterPendingShot: null, votes: {},
-      nightNumber: 1,
-      history: [],
-    });
-    setGameId(newGameId);
-  };
-  return (
-    <div className="text-center">
-      <h1 className="text-5xl font-bold text-red-500 mb-8">Cidade Dorme Online</h1>
-      <button onClick={createGame} className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-xl mb-4 w-full max-w-xs">Criar Novo Jogo</button>
-      <div className="my-4 text-gray-400">OU</div>
-      <div className="flex justify-center">
-        <input type="text" value={roomId} onChange={(e) => setRoomId(e.target.value.toUpperCase())} placeholder="Código da Sala" className="bg-gray-700 text-white p-3 rounded-l-lg focus:outline-none w-48"/>
-        <button onClick={() => roomId.trim() && setGameId(roomId.trim())} className="bg-blue-600 hover:bg-blue-700 text-white font-bold p-3 rounded-r-lg">Entrar</button>
-      </div>
-    </div>
-  );
-};
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [gameId, setGameId] = useState(null);
   const [gameState, setGameState] = useState(null);
   const [playerName, setPlayerName] = useState('');
+  const [showHomePage, setShowHomePage] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => setUser(currentUser));
@@ -314,7 +290,8 @@ export default function App() {
   };
 
   const renderScreen = () => {
-    if (!user) return <div className="text-center text-xl">Conectando...</div>;
+    if (!user) return <HomePage onEnterGame={() => setShowHomePage(false)} />;
+    if (showHomePage) return <HomePage onEnterGame={() => setShowHomePage(false)} />;
     if (!gameId) return <GameLobby setGameId={setGameId} />;
     if (!gameState) return <div className="text-center text-xl">Carregando sala...</div>;
 
@@ -343,6 +320,11 @@ export default function App() {
   
   const currentPlayer = gameState ? gameState.players.find(p => p.uid === user.uid) : null;
   const roleColorClass = currentPlayer?.role?.name ? roleColors[currentPlayer.role.name] || 'text-gray-400' : 'text-gray-400';
+
+  // Don't show the game UI wrapper on home page
+  if (showHomePage) {
+    return renderScreen();
+  }
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4 font-sans">
