@@ -181,7 +181,7 @@ export default function App() {
       const targetPlayer = playersCopy.find(p => p.name === playerToEliminate);
       if (targetPlayer) {
         targetPlayer.isAlive = false;
-        newLog.push(`A cidade decidiu! ${playerToEliminate} foi eliminado(a). Seu papel era ${targetPlayer.role.name}.`);
+        newLog.push(`A cidade decidiu! ${playerToEliminate} foi eliminado(a).`);
         if (targetPlayer.role.name === ROLES.CACADOR.name) {
           hunterTriggered = targetPlayer.name;
         }
