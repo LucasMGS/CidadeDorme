@@ -28,7 +28,7 @@ export const GameLobby = ({ setGameId }) => {
         <img 
           src="/images/cidade-dorme-logo.png" 
           alt="Cidade Dorme"
-          className="mx-auto mb-8 max-w-sm"
+          className="mx-auto mb-8 max-w-xs sm:max-w-sm"
         />
         <div className="flex justify-center gap-4 mb-8">
           <button 
@@ -57,7 +57,7 @@ export const GameLobby = ({ setGameId }) => {
       <div className="mb-16">
         <h2 className="text-2xl font-bold mb-8">Como jogar</h2>
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-slate-800 p-6 rounded">
+          <div className="bg-slate-800 p-6 rounded-xl">
             <div className="flex items-center mb-4">
               <div className="w-6 h-6 bg-blue-500 rounded-full mr-3 flex items-center justify-center">
                 <span className="text-xs text-white">☀</span>
@@ -70,7 +70,7 @@ export const GameLobby = ({ setGameId }) => {
             </p>
           </div>
           
-          <div className="bg-slate-800 p-6 rounded">
+          <div className="bg-slate-800 p-6 rounded-xl">
             <div className="flex items-center mb-4">
               <div className="w-6 h-6 bg-purple-500 rounded-full mr-3 flex items-center justify-center">
                 <span className="text-xs text-white">🌙</span>
@@ -83,7 +83,7 @@ export const GameLobby = ({ setGameId }) => {
             </p>
           </div>
           
-          <div className="bg-slate-800 p-6 rounded">
+          <div className="bg-slate-800 p-6 rounded-xl">
             <div className="flex items-center mb-4">
               <div className="w-6 h-6 bg-green-500 rounded-full mr-3 flex items-center justify-center">
                 <span className="text-xs text-white">🎯</span>
@@ -102,7 +102,7 @@ export const GameLobby = ({ setGameId }) => {
       <div>
         <h2 className="text-2xl font-bold mb-8">Papéis dentro do jogo</h2>
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-slate-800 p-6 rounded">
+          <div className="bg-slate-800 p-6 rounded-xl">
             <h3 className="text-lg font-semibold mb-2 text-green-400">Aldeão</h3>
             <p className="text-sm text-gray-300">
               Um cidadão comum tentando identificar e eliminar os lobos. 
@@ -110,7 +110,7 @@ export const GameLobby = ({ setGameId }) => {
             </p>
           </div>
           
-          <div className="bg-slate-800 p-6 rounded">
+          <div className="bg-slate-800 p-6 rounded-xl">
             <h3 className="text-lg font-semibold mb-2 text-purple-400">Feiticeiro</h3>
             <p className="text-sm text-gray-300">
               Um poderoso usuário de magia que pode usar feitiços especiais. 
@@ -118,7 +118,7 @@ export const GameLobby = ({ setGameId }) => {
             </p>
           </div>
           
-          <div className="bg-slate-800 p-6 rounded">
+          <div className="bg-slate-800 p-6 rounded-xl">
             <h3 className="text-lg font-semibold mb-2 text-orange-400">Caçador</h3>
             <p className="text-sm text-gray-300">
               Um atirador habilidoso com um tiro mortal. Quando eliminado, 
@@ -126,7 +126,7 @@ export const GameLobby = ({ setGameId }) => {
             </p>
           </div>
           
-          <div className="bg-slate-800 p-6 rounded">
+          <div className="bg-slate-800 p-6 rounded-xl">
             <h3 className="text-lg font-semibold mb-2 text-blue-400">Médico</h3>
             <p className="text-sm text-gray-300">
               Um curandeiro que pode salvar vidas durante a noite. 
@@ -134,7 +134,7 @@ export const GameLobby = ({ setGameId }) => {
             </p>
           </div>
           
-          <div className="bg-slate-800 p-6 rounded">
+          <div className="bg-slate-800 p-6 rounded-xl">
             <h3 className="text-lg font-semibold mb-2 text-cyan-400">Vidente</h3>
             <p className="text-sm text-gray-300">
               Uma figura mística que pode ver a verdadeira natureza dos outros. 
@@ -142,7 +142,7 @@ export const GameLobby = ({ setGameId }) => {
             </p>
           </div>
           
-          <div className="bg-slate-800 p-6 rounded">
+          <div className="bg-slate-800 p-6 rounded-xl">
             <h3 className="text-lg font-semibold mb-2 text-red-400">Lobo</h3>
             <p className="text-sm text-gray-300">
               Um predador social escondido entre os aldeões. 
