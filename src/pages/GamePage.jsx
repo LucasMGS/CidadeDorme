@@ -30,7 +30,7 @@ export const GamePage = () => {
     return () => unsubscribe();
   }, []);
 
-  // Handle disconnect on browser/tab close
+  // Handle disconnect only on browser/tab close
   useEffect(() => {
     const handleBeforeUnload = async () => {
       if (user && gameState) {
@@ -48,19 +48,9 @@ export const GamePage = () => {
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    // Also handle visibility change for mobile browsers
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'hidden') {
-        handleBeforeUnload();
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [user, gameState, handleUpdateGameState]);
 
@@ -398,7 +388,15 @@ export const GamePage = () => {
                   <p className={`text-sm font-semibold ${roleColorClass}`}>{currentPlayer.role.name}</p>
               </div>
             )}
-            <button onClick={handleLeaveGame} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-lg text-sm mt-2">Sair</button>
+            <button 
+              onClick={handleLeaveGame} 
+              className="text-white font-bold py-2 px-3 rounded-lg text-sm mt-2"
+              style={{ backgroundColor: '#660708' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
+            >
+              Sair
+            </button>
           </div>
         )}
         <div className={gameState && gameState.phase !== 'LOBBY' ? 'pt-24 md:pt-0' : ''}>

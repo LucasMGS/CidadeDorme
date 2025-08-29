@@ -44,7 +44,15 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
         <h2 className="text-3xl font-bold mb-6">Sua Investigação</h2>
         <div className="bg-gray-800 p-6 rounded-lg">
           <p className="text-lg text-yellow-300 mb-4">O papel de {nightData.seerCheck.target} é <span className={roleColors[nightData.seerCheck.role.name]}>{nightData.seerCheck.role.name}</span></p>
-          <button onClick={() => advanceNightTurn()} className="bg-blue-600 hover:bg-blue-800 text-white font-bold p-3 rounded-lg">Continuar</button>
+          <button 
+            onClick={() => advanceNightTurn()} 
+            className="text-white font-bold p-3 rounded-lg"
+            style={{ backgroundColor: '#660708' }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
+          >
+            Continuar
+          </button>
         </div>
       </div>
     );
@@ -64,20 +72,45 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
           }
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 my-4">
             {witchState.hasLifePotion && nightData.assassinTarget && (
-              <button onClick={() => handleWitchAction({ 'witchState.hasLifePotion': false, 'nightData.witchSaveUsed': true })} className="bg-green-600 hover:bg-green-700 text-white font-bold p-4 rounded-lg w-full sm:w-auto">Usar Poção da Vida</button>
+              <button 
+                onClick={() => handleWitchAction({ 'witchState.hasLifePotion': false, 'nightData.witchSaveUsed': true })} 
+                className="text-white font-bold p-4 rounded-lg w-full sm:w-auto"
+                style={{ backgroundColor: '#660708' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
+              >
+                Usar Poção da Vida
+              </button>
             )}
             {witchState.hasDeathPotion && (
               <div className="w-full sm:w-auto">
                 <h3 className="mb-2">Usar Poção da Morte em:</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {alivePlayers.filter(p => p.uid !== currentPlayer.uid && p.name !== nightData.assassinTarget).map(p => (
-                      <button key={p.uid} onClick={() => handleWitchAction({ 'witchState.hasDeathPotion': false, 'nightData.witchKillTarget': p.name })} className="bg-purple-600 hover:bg-purple-700 text-white font-bold p-2 rounded-lg">{p.name}</button>
+                      <button 
+                        key={p.uid} 
+                        onClick={() => handleWitchAction({ 'witchState.hasDeathPotion': false, 'nightData.witchKillTarget': p.name })} 
+                        className="text-white font-bold p-2 rounded-lg"
+                        style={{ backgroundColor: '#660708' }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
+                      >
+                        {p.name}
+                      </button>
                   ))}
                 </div>
               </div>
             )}
           </div>
-          <button onClick={() => advanceNightTurn()} className="bg-gray-600 hover:bg-gray-700 text-white font-bold p-3 rounded-lg mt-4">Não fazer nada</button>
+          <button 
+            onClick={() => advanceNightTurn()} 
+            className="text-white font-bold p-3 rounded-lg mt-4"
+            style={{ backgroundColor: '#660708' }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
+          >
+            Não fazer nada
+          </button>
         </div>
       </div>
     );
@@ -124,13 +157,26 @@ export const NightScreen = ({ gameState, currentPlayer, handleUpdateGameState })
           {targets.map(p => {
             const isSelfSave = currentPlayer.role.name === ROLES.MEDICO.name && p.uid === currentPlayer.uid;
             return (
-              <button key={p.uid} onClick={() => handleAction(p)} className="bg-blue-600 hover:bg-blue-800 text-white font-bold p-4 rounded-lg">
+              <button 
+                key={p.uid} 
+                onClick={() => handleAction(p)} 
+                className="text-white font-bold p-4 rounded-lg"
+                style={{ backgroundColor: '#660708' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
+              >
                 {isSelfSave ? "Me salvar" : p.name}
               </button>
             )
           })}
           {(actor.role.name === ROLES.MEDICO.name || actor.role.name === ROLES.LOBO.name) && (
-            <button onClick={() => handleAction(null)} className="bg-gray-600 hover:bg-gray-700 text-white font-bold p-4 rounded-lg col-span-full">
+            <button 
+              onClick={() => handleAction(null)} 
+              className="text-white font-bold p-4 rounded-lg col-span-full"
+              style={{ backgroundColor: '#660708' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
+            >
                 {actor.role.name === ROLES.MEDICO.name ? "Não proteger ninguém" : "Não atacar ninguém"}
             </button>
           )}

@@ -31,7 +31,10 @@ export const HomePage = () => {
         
         <button
           onClick={handleEnterGame}
-          className="bg-red-600 hover:bg-red-700 transition-colors duration-300 text-white font-bold py-4 px-8 rounded-lg text-xl tracking-wide shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          className="text-white font-bold py-4 px-8 rounded-lg text-xl tracking-wide shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          style={{ backgroundColor: '#660708' }}
+          onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
         >
           ENTRAR NO JOGO
         </button>

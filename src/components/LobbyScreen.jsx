@@ -104,7 +104,10 @@ export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handle
         {currentPlayerInGame && (
           <button 
             onClick={handleLeaveGame} 
-            className="absolute top-6 right-6 bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
+            className="absolute top-6 right-6 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
+            style={{ backgroundColor: '#660708' }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
           >
             Sair da Sala
           </button>
@@ -129,7 +132,10 @@ export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handle
               <button 
                 onClick={handleJoinGame} 
                 disabled={!playerName.trim()}
-                className="bg-red-700 hover:bg-red-800 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+                className="disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+                style={{ backgroundColor: !playerName.trim() ? '#475569' : '#660708' }}
+                onMouseEnter={(e) => playerName.trim() && (e.target.style.backgroundColor = '#520506')}
+                onMouseLeave={(e) => playerName.trim() && (e.target.style.backgroundColor = '#660708')}
               >
                 Entrar
               </button>
@@ -173,7 +179,10 @@ export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handle
                           />
                           <button 
                             onClick={() => handleNameChange(p)} 
-                            className="bg-green-600 hover:bg-green-700 px-2 py-1 rounded text-white text-sm"
+                            className="px-2 py-1 rounded text-white text-sm"
+                        style={{ backgroundColor: '#660708' }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
                           >
                             ✓
                           </button>
@@ -219,7 +228,10 @@ export const LobbyScreen = ({ gameState, user, playerName, setPlayerName, handle
           {isHost && players.length >= minPlayers && (
             <button 
               onClick={startGame} 
-              className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-colors shadow-lg hover:shadow-xl"
+              className="text-white font-bold py-4 px-8 rounded-xl text-lg transition-colors shadow-lg hover:shadow-xl"
+              style={{ backgroundColor: '#660708' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
             >
               Começar Jogo
             </button>

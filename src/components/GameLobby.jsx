@@ -60,11 +60,11 @@ export const GameLobby = ({ setGameId }) => {
     setGameId(roomId.trim());
   };
 
-  const interFont = { fontFamily: 'Inter, sans-serif' };
+  const jainiFont = { fontFamily: 'Jaini, sans-serif' };
 
   if (loading) {
     return (
-      <div className="bg-slate-900 text-white min-h-screen p-8 flex items-center justify-center" style={interFont}>
+      <div className="text-white min-h-screen p-8 flex items-center justify-center" style={{...jainiFont, backgroundColor: '#161A1D'}}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
           <p>Carregando...</p>
@@ -74,26 +74,36 @@ export const GameLobby = ({ setGameId }) => {
   }
 
   return (
-    <div className="bg-slate-900 text-white min-h-screen p-8" style={interFont}>
+    <div className="text-white min-h-screen p-8" style={{...jainiFont, backgroundColor: '#161A1D'}}>
       {/* Header */}
       <div className="text-center mb-16">
         <img 
           src="/images/cidade-dorme-logo.png" 
           alt="Cidade Dorme"
-          className="mx-auto mb-8 max-w-xs sm:max-w-sm"
+          className="mx-auto mb-8 max-w-24 sm:max-w-28"
         />
-        <div className="flex justify-center gap-4 mb-8">
+        <div className="flex justify-center gap-4 mb-8 mt-16">
           <button 
             onClick={createGame} 
             disabled={creating || !user}
-            className="bg-red-700 hover:bg-red-800 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold px-8 py-3 text-sm uppercase tracking-wide transition-colors"
+            className="disabled:cursor-not-allowed text-white font-semibold px-8 py-4 text-sm uppercase tracking-wide transition-colors rounded-xl"
+            style={{ 
+              backgroundColor: creating || !user ? '#475569' : '#660708'
+            }}
+            onMouseEnter={(e) => !creating && user && (e.target.style.backgroundColor = '#520506')}
+            onMouseLeave={(e) => !creating && user && (e.target.style.backgroundColor = '#660708')}
           >
             {creating ? 'Criando...' : 'Criar Novo Jogo'}
           </button>
           <button 
             onClick={joinGame} 
             disabled={!roomId.trim() || !user}
-            className="bg-red-700 hover:bg-red-800 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold px-8 py-3 text-sm uppercase tracking-wide transition-colors"
+            className="disabled:cursor-not-allowed text-white font-semibold px-8 py-4 text-sm uppercase tracking-wide transition-colors rounded-xl"
+            style={{ 
+              backgroundColor: !roomId.trim() || !user ? '#475569' : '#660708'
+            }}
+            onMouseEnter={(e) => roomId.trim() && user && (e.target.style.backgroundColor = '#520506')}
+            onMouseLeave={(e) => roomId.trim() && user && (e.target.style.backgroundColor = '#660708')}
           >
             Entrar Em Um Jogo
           </button>
@@ -103,13 +113,16 @@ export const GameLobby = ({ setGameId }) => {
           value={roomId} 
           onChange={(e) => setRoomId(e.target.value.toUpperCase())} 
           placeholder="Código da sala..." 
-          className="bg-slate-700 text-white px-4 py-2 text-center text-sm border-none focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="bg-slate-700 text-white px-4 py-2 text-center text-sm border-none focus:outline-none focus:ring-2 focus:ring-red-600 rounded-xl"
           onKeyDown={(e) => e.key === 'Enter' && joinGame()}
         />
       </div>
 
+      {/* Create a thin line */}
+        <hr className="border-t border-gray-700 my-12" />
+      
+
       {/* Como jogar */}
-      <div className="mb-16">
         <h2 className="text-2xl font-bold mb-8">Como jogar</h2>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-slate-800 p-6 rounded-xl">
@@ -151,14 +164,13 @@ export const GameLobby = ({ setGameId }) => {
             </p>
           </div>
         </div>
-      </div>
 
       {/* Papéis dentro do jogo */}
-      <div>
+      <div className="mt-16">
         <h2 className="text-2xl font-bold mb-8">Papéis dentro do jogo</h2>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-slate-800 p-6 rounded-xl">
-            <h3 className="text-lg font-semibold mb-2 text-green-400">Aldeão</h3>
+            <h3 className="text-lg font-semibold mb-2" style={{ color: '#FFFFFF' }}>Aldeão</h3>
             <p className="text-sm text-gray-300">
               Um cidadão comum tentando identificar e eliminar os lobos. 
               Vota sabiamente durante a fase do dia para ajudar seu time a vencer.
@@ -166,7 +178,7 @@ export const GameLobby = ({ setGameId }) => {
           </div>
           
           <div className="bg-slate-800 p-6 rounded-xl">
-            <h3 className="text-lg font-semibold mb-2 text-purple-400">Feiticeiro</h3>
+            <h3 className="text-lg font-semibold mb-2" style={{ color: '#B938F5' }}>Feiticeiro</h3>
             <p className="text-sm text-gray-300">
               Um poderoso usuário de magia que pode usar feitiços especiais. 
               Use suas habilidades estrategicamente para ajudar a vila a sobreviver à noite.
@@ -174,7 +186,7 @@ export const GameLobby = ({ setGameId }) => {
           </div>
           
           <div className="bg-slate-800 p-6 rounded-xl">
-            <h3 className="text-lg font-semibold mb-2 text-orange-400">Caçador</h3>
+            <h3 className="text-lg font-semibold mb-2" style={{ color: '#D8A22E' }}>Caçador</h3>
             <p className="text-sm text-gray-300">
               Um atirador habilidoso com um tiro mortal. Quando eliminado, 
               você pode levar outro jogador consigo. Escolha seu alvo com cuidado.
@@ -182,7 +194,7 @@ export const GameLobby = ({ setGameId }) => {
           </div>
           
           <div className="bg-slate-800 p-6 rounded-xl">
-            <h3 className="text-lg font-semibold mb-2 text-blue-400">Médico</h3>
+            <h3 className="text-lg font-semibold mb-2" style={{ color: '#2ED86F' }}>Médico</h3>
             <p className="text-sm text-gray-300">
               Um curandeiro que pode salvar vidas durante a noite. 
               Escolha um jogador a cada noite para proteger contra ataques de lobos. Você não pode se proteger.
@@ -190,7 +202,7 @@ export const GameLobby = ({ setGameId }) => {
           </div>
           
           <div className="bg-slate-800 p-6 rounded-xl">
-            <h3 className="text-lg font-semibold mb-2 text-cyan-400">Vidente</h3>
+            <h3 className="text-lg font-semibold mb-2" style={{ color: '#2E69D8' }}>Vidente</h3>
             <p className="text-sm text-gray-300">
               Uma figura mística que pode ver a verdadeira natureza dos outros. 
               A cada noite, você pode investigar um jogador para saber se ele é do time do Bem ou do mal.
@@ -198,7 +210,7 @@ export const GameLobby = ({ setGameId }) => {
           </div>
           
           <div className="bg-slate-800 p-6 rounded-xl">
-            <h3 className="text-lg font-semibold mb-2 text-red-400">Lobo</h3>
+            <h3 className="text-lg font-semibold mb-2" style={{ color: '#AC2748' }}>Lobo</h3>
             <p className="text-sm text-gray-300">
               Um predador social escondido entre os aldeões. 
               Trabalhe com outros lobos para eliminar os moradores do bem durante a fase da noite.
