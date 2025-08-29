@@ -142,7 +142,7 @@ export const GameLobby = ({ setGameId }) => {
               </div>
               <h3 className="text-lg font-semibold">Fase do dia</h3>
             </div>
-            <p className="text-sm text-gray-300">
+            <p className="text-sm text-gray-300" style={{ fontFamily: 'Fenix, serif' }}>
               Todos os jogadores discutem e votam para eliminar alguém que suspeitem ser ameaça. 
               Use a lógica, a observação e a dedução para identificar as ameaças.
             </p>
@@ -155,7 +155,7 @@ export const GameLobby = ({ setGameId }) => {
               </div>
               <h3 className="text-lg font-semibold">Fase da noite</h3>
             </div>
-            <p className="text-sm text-gray-300">
+            <p className="text-sm text-gray-300" style={{ fontFamily: 'Fenix, serif' }}>
               Funções especiais ativam suas habilidades em segredo. Os lobos escolhem uma vítima, 
               enquanto outros papéis trabalham para proteger ou investigar.
             </p>
@@ -168,7 +168,7 @@ export const GameLobby = ({ setGameId }) => {
               </div>
               <h3 className="text-lg font-semibold">Dicas de estratégia</h3>
             </div>
-            <p className="text-sm text-gray-300">
+            <p className="text-sm text-gray-300" style={{ fontFamily: 'Fenix, serif' }}>
               Preste atenção aos padrões de votação, às reivindicações e ao comportamento. Os lobos 
               tentarão se misturar, enquanto os jogadores do Time do Bem buscam a verdade.
             </p>
@@ -184,11 +184,11 @@ export const GameLobby = ({ setGameId }) => {
                 <img 
                   src="/images/aldeao.png" 
                   alt="Aldeão" 
-                  className="w-30 h-30 object-fill rounded"
+                  className="w-32 h-32 object-fill rounded"
                 />
               <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-3" style={{ color: '#FFFFFF' }}>Aldeão</h3>
-                <p className="text-base text-gray-300 leading-relaxed">
+                <h3 className="text-xl font-semibold mb-2" style={{ color: '#FFFFFF' }}>Aldeão</h3>
+                <p className="text-base text-gray-300 leading-snug" style={{ fontFamily: 'Fenix, serif' }}>
                   Um cidadão comum tentando identificar e eliminar os lobos. 
                   Vota sabiamente durante a fase do dia para ajudar seu time a vencer.
                 </p>
@@ -201,11 +201,11 @@ export const GameLobby = ({ setGameId }) => {
                 <img 
                   src="/images/feiticeiro.png" 
                   alt="Feiticeiro" 
-                  className="w-30 h-30 object-fill rounded"
+                  className="w-32 h-32 object-fill rounded"
                 />
               <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-3" style={{ color: '#B938F5' }}>Feiticeiro</h3>
-                <p className="text-base text-gray-300 leading-relaxed">
+                <h3 className="text-xl font-semibold mb-2" style={{ color: '#B938F5' }}>Feiticeiro</h3>
+                <p className="text-base text-gray-300 leading-snug" style={{ fontFamily: 'Fenix, serif' }}>
                   Um poderoso usuário de magia que pode usar feitiços especiais. 
                   Use suas habilidades estrategicamente para ajudar a vila a sobreviver à noite.
                 </p>
@@ -218,11 +218,11 @@ export const GameLobby = ({ setGameId }) => {
                 <img 
                   src="/images/cacador.png" 
                   alt="Caçador" 
-                  className="w-30 h-30 object-fill rounded"
+                  className="w-32 h-32 object-fill rounded"
                 />
               <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-3" style={{ color: '#D8A22E' }}>Caçador</h3>
-                <p className="text-base text-gray-300 leading-relaxed">
+                <h3 className="text-xl font-semibold mb-2" style={{ color: '#D8A22E' }}>Caçador</h3>
+                <p className="text-base text-gray-300 leading-snug" style={{ fontFamily: 'Fenix, serif' }}>
                   Um atirador habilidoso com um tiro mortal. Quando eliminado, 
                   você pode levar outro jogador consigo. Escolha seu alvo com cuidado.
                 </p>
@@ -235,11 +235,11 @@ export const GameLobby = ({ setGameId }) => {
                 <img 
                   src="/images/medico.png" 
                   alt="Médico" 
-                  className="w-30 h-30 object-fill rounded"
+                  className="w-32 h-32 object-fill rounded"
                 />
               <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-3" style={{ color: '#2ED86F' }}>Médico</h3>
-                <p className="text-base text-gray-300 leading-relaxed">
+                <h3 className="text-xl font-semibold mb-2" style={{ color: '#2ED86F' }}>Médico</h3>
+                <p className="text-base text-gray-300 leading-snug" style={{ fontFamily: 'Fenix, serif' }}>
                   Um curandeiro que pode salvar vidas durante a noite. 
                   Escolha um jogador a cada noite para proteger contra ataques de lobos. Você não pode se proteger.
                 </p>
@@ -252,11 +252,11 @@ export const GameLobby = ({ setGameId }) => {
                 <img 
                   src="/images/vidente.png" 
                   alt="Vidente" 
-                  className="w-30 h-30 object-fill rounded"
+                  className="w-32 h-32 object-fill rounded"
                 />
               <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-3" style={{ color: '#2E69D8' }}>Vidente</h3>
-                <p className="text-base text-gray-300 leading-relaxed">
+                <h3 className="text-xl font-semibold mb-2" style={{ color: '#2E69D8' }}>Vidente</h3>
+                <p className="text-base text-gray-300 leading-snug" style={{ fontFamily: 'Fenix, serif' }}>
                   Uma figura mística que pode ver a verdadeira natureza dos outros. 
                   A cada noite, você pode investigar um jogador para saber se ele é do time do Bem ou do mal.
                 </p>
@@ -269,11 +269,11 @@ export const GameLobby = ({ setGameId }) => {
                 <img 
                   src="/images/lobo.png" 
                   alt="Lobo" 
-                  className="w-30 h-30 object-fill rounded"
+                  className="w-32 h-32 object-fill rounded"
                 />
               <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-3" style={{ color: '#AC2748' }}>Lobo</h3>
-                <p className="text-base text-gray-300 leading-relaxed">
+                <h3 className="text-xl font-semibold mb-2" style={{ color: '#AC2748' }}>Lobo</h3>
+                <p className="text-base text-gray-300 leading-snug" style={{ fontFamily: 'Fenix, serif' }}>
                   Um predador social escondido entre os aldeões. 
                   Trabalhe com outros lobos para eliminar os moradores do bem durante a fase da noite.
                 </p>
@@ -298,7 +298,7 @@ export const GameLobby = ({ setGameId }) => {
                 className="w-full text-white px-6 py-4 text-lg border-none focus:outline-none rounded-2xl"
                 style={{ backgroundColor: '#2A2F36', fontFamily: 'Jaini, sans-serif' }}
                 onKeyDown={(e) => e.key === 'Enter' && joinGame()}
-                autoFocus
+                autoFocu4
               />
             </div>
 
