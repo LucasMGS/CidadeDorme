@@ -27,3 +27,9 @@
   font-weight: normal;
   font-style: normal;
 }
+
+body {
+  background-color: #161A1D;
+  margin: 0;
+  padding: 0;
+}

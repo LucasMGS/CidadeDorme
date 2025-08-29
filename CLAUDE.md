@@ -32,11 +32,11 @@ This is **Cidade Dorme**, a Brazilian multiplayer Mafia/Werewolf game built with
 **Real-time Updates**: Uses Firebase `onSnapshot` listeners for real-time game state synchronization across all players.
 
 **Phase-Based Flow**: The game progresses through distinct phases:
-1. **LOBBY** ’ players join
-2. **ROLE_REVEAL** ’ players see their assigned roles  
-3. **NIGHT** ’ special roles act in turn order
-4. **DAY** ’ players discuss and vote
-5. **GAME_OVER** ’ winner determination
+1. **LOBBY** ? players join
+2. **ROLE_REVEAL** ? players see their assigned roles  
+3. **NIGHT** ? special roles act in turn order
+4. **DAY** ? players discuss and vote
+5. **GAME_OVER** ? winner determination
 
 **Role System**: Roles are defined in `src/constants/roles.js` with team assignments (good/evil). Role assignment logic in `src/utils/roleAssigner.js` scales based on player count.
 
@@ -64,7 +64,7 @@ This is **Cidade Dorme**, a Brazilian multiplayer Mafia/Werewolf game built with
 - Uses Jaini font for main UI elements and buttons
 - Standard button color: `#660708` (dark red) with `#520506` hover
 - Background color: `#161A1D` for main screens
-- Role colors: Lobo (#AC2748), Feiticeiro (#B938F5), Vidente (#2E69D8), Médico (#2ED86F), Caçador (#D8A22E), Aldeão (#FFFFFF)
+- Role colors: Lobo (#AC2748), Feiticeiro (#B938F5), Vidente (#2E69D8), M?dico (#2ED86F), Ca?ador (#D8A22E), Alde?o (#FFFFFF)
 
 ### Environment Variables Required
 
@@ -80,14 +80,17 @@ VITE_FIREBASE_MEASUREMENT_ID
 
 ### Important Game Logic
 
-**Turn Order**: Night phases follow strict turn order: Vidente ’ Lobo ’ Feiticeira ’ Médico. Only alive players with these roles participate.
+**Turn Order**: Night phases follow strict turn order: Vidente ? Lobo ? Feiticeira ? M?dico. Only alive players with these roles participate.
 
 **Win Conditions**: 
 - Good team wins when all evil players are eliminated
 - Evil team wins when evil players equal/outnumber good players
 
 **Special Role Mechanics**:
-- Médico cannot protect the same player twice in a row
+- M?dico cannot protect the same player twice in a row
 - Feiticeira has one-time use life/death potions
-- Caçador gets revenge shot when eliminated
+- Ca?ador gets revenge shot when eliminated
 - IP restrictions limit one player per IP address
+
+- Use these colors for the roles: #AC2748 for Lobo, B938F5 for Feiticeiro, 2E69D8 for Vidente, 2ED86F for medico, D8A22E for caÃ§ador, and FFFFFF for aldeao
+- use this colors as background color: #161A1D
