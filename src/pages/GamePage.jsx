@@ -398,7 +398,15 @@ export const GamePage = () => {
                   <p className={`text-sm font-semibold ${roleColorClass}`}>{currentPlayer.role.name}</p>
               </div>
             )}
-            <button onClick={handleLeaveGame} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-lg text-sm mt-2">Sair</button>
+            <button 
+              onClick={handleLeaveGame} 
+              className="text-white font-bold py-2 px-3 rounded-lg text-sm mt-2"
+              style={{ backgroundColor: '#660708' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
+            >
+              Sair
+            </button>
           </div>
         )}
         <div className={gameState && gameState.phase !== 'LOBBY' ? 'pt-24 md:pt-0' : ''}>

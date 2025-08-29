@@ -82,8 +82,24 @@ export const GameOverScreen = ({ gameState, user, handleUpdateGameState }) => {
 
       {isHost && (
         <div className="mt-8 flex justify-center gap-4">
-            <button onClick={startNewRound} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-xl">Próxima Noite</button>
-            <button onClick={backToLobby} className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg text-xl">Voltar para o Lobby</button>
+            <button 
+              onClick={startNewRound} 
+              className="text-white font-bold py-3 px-6 rounded-lg text-xl"
+              style={{ backgroundColor: '#660708' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
+            >
+              Próxima Noite
+            </button>
+            <button 
+              onClick={backToLobby} 
+              className="text-white font-bold py-3 px-6 rounded-lg text-xl"
+              style={{ backgroundColor: '#660708' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#660708'}
+            >
+              Voltar para o Lobby
+            </button>
         </div>
       )}
       {!isHost && (

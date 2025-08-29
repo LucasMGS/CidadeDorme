@@ -69,15 +69,35 @@ export const DayScreen = ({ gameState, currentPlayer, handleUpdateGameState }) =
             <h3 className="text-2xl font-bold mb-4">Vote para eliminar um suspeito</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {alivePlayers.filter(p => p.uid !== currentPlayer.uid).map(p => (
-                  <button key={p.uid} onClick={() => setSelectedVote(p.name)} className={`font-bold p-4 rounded-lg ${selectedVote === p.name ? 'bg-green-600' : 'bg-red-600 hover:bg-red-700'}`}>
+                  <button 
+                    key={p.uid} 
+                    onClick={() => setSelectedVote(p.name)} 
+                    className="font-bold p-4 rounded-lg text-white"
+                    style={{ backgroundColor: selectedVote === p.name ? '#520506' : '#660708' }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = selectedVote === p.name ? '#520506' : '#660708'}
+                  >
                     {p.name}
                   </button>
               ))}
-              <button onClick={() => setSelectedVote('Ninguém')} className={`font-bold p-4 rounded-lg col-span-full ${selectedVote === 'Ninguém' ? 'bg-green-600' : 'bg-gray-600 hover:bg-gray-700'}`}>
+              <button 
+                onClick={() => setSelectedVote('Ninguém')} 
+                className="font-bold p-4 rounded-lg col-span-full text-white"
+                style={{ backgroundColor: selectedVote === 'Ninguém' ? '#520506' : '#660708' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#520506'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = selectedVote === 'Ninguém' ? '#520506' : '#660708'}
+              >
                   Não votar em ninguém
               </button>
             </div>
-            <button onClick={handleConfirmVote} disabled={!selectedVote} className="mt-6 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-3 px-8 rounded-lg text-xl">
+            <button 
+              onClick={handleConfirmVote} 
+              disabled={!selectedVote} 
+              className="mt-6 disabled:bg-gray-500 text-white font-bold py-3 px-8 rounded-lg text-xl"
+              style={{ backgroundColor: !selectedVote ? '#6b7280' : '#660708' }}
+              onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#520506')}
+              onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#660708')}
+            >
                 Confirmar Voto
             </button>
         </div>
