@@ -19,10 +19,50 @@ export const GamePage = () => {
   const [gameState, setGameState] = useState(null);
   const [playerName, setPlayerName] = useState('');
 
+  const handleUpdateGameState = async (newState) => {
+    if (!gameId) return;
+    const gameRef = doc(db, "games", gameId);
+    await updateDoc(gameRef, newState);
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => setUser(currentUser));
     return () => unsubscribe();
   }, []);
+
+  // Handle disconnect on browser/tab close
+  useEffect(() => {
+    const handleBeforeUnload = async () => {
+      if (user && gameState) {
+        const playerToRemove = gameState.players.find(p => p.uid === user.uid);
+        if (playerToRemove) {
+          try {
+            await handleUpdateGameState({
+              players: arrayRemove(playerToRemove)
+            });
+          } catch (error) {
+            console.log('Could not remove player on disconnect:', error);
+          }
+        }
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    // Also handle visibility change for mobile browsers
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        handleBeforeUnload();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [user, gameState, handleUpdateGameState]);
 
   useEffect(() => {
     if (!gameId || !user) return;
@@ -38,12 +78,6 @@ export const GamePage = () => {
     return () => unsubscribe();
   }, [gameId, user, navigate]);
   
-  const handleUpdateGameState = async (newState) => {
-    if (!gameId) return;
-    const gameRef = doc(db, "games", gameId);
-    await updateDoc(gameRef, newState);
-  };
-
   const checkWinCondition = (players) => {
     const alive = players.filter(p => p.isAlive);
     const evil = alive.filter(p => p.role.team === 'evil');
@@ -271,9 +305,46 @@ export const GamePage = () => {
 
   const handleJoinGame = async () => {
     if (!playerName.trim() || !user) return;
-    await handleUpdateGameState({
-      players: arrayUnion({ uid: user.uid, name: playerName.trim(), role: null, isAlive: true })
-    });
+    
+    // Check if user is already in the game
+    const existingPlayer = gameState.players.find(p => p.uid === user.uid);
+    if (existingPlayer) return;
+    
+    // Simple IP-based restriction (note: this is not foolproof)
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const { ip } = await response.json();
+      
+      // Check if any player already has this IP
+      const playersWithIP = gameState.players.filter(p => p.ip === ip);
+      if (playersWithIP.length > 0) {
+        alert('Apenas um jogador por IP é permitido nesta sala.');
+        return;
+      }
+      
+      await handleUpdateGameState({
+        players: arrayUnion({ 
+          uid: user.uid, 
+          name: playerName.trim().substring(0, 20), 
+          role: null, 
+          isAlive: true,
+          ip: ip,
+          joinedAt: Date.now()
+        })
+      });
+    } catch (error) {
+      // If IP detection fails, still allow joining but without IP tracking
+      console.warn('Could not detect IP:', error);
+      await handleUpdateGameState({
+        players: arrayUnion({ 
+          uid: user.uid, 
+          name: playerName.trim().substring(0, 20), 
+          role: null, 
+          isAlive: true,
+          joinedAt: Date.now()
+        })
+      });
+    }
   };
 
   const handleLeaveGame = async () => {
